@@ -11,26 +11,20 @@ class Producer(object):
         self.client = SimpleClient(addr)
         self.producer = KeyedProducer(self.client)
 
-    def produce_msgs(self, source_symbol):
-        price_field = random.randint(800,1400)
+    def produce_msgs(self, source_symbol, file_to_use):
+        file_obj = open(file_to_use, 'r')
         msg_cnt = 0
         while True:
-            time_field = datetime.now().strftime("%Y%m%d %H%M%S")
-            price_field += random.randint(-10, 10)/10.0
-            volume_field = random.randint(1, 1000)
-            str_fmt = "{};{};{};{}"
-            message_info = str_fmt.format(source_symbol,
-                                          time_field,
-                                          price_field,
-                                          volume_field)
+            message_info = file_obj.next()
             print message_info
-            self.producer.send_messages('price_data_part4', source_symbol, message_info)
+            self.producer.send_messages('venmo2', source_symbol, message_info)
             msg_cnt += 1
 
 if __name__ == "__main__":
     args = sys.argv
     ip_addr = str(args[1])
     partition_key = str(args[2])
+    file_to_use = str(args[3])
     prod = Producer(ip_addr)
-    prod.produce_msgs(partition_key) 
+    prod.produce_msgs(partition_key, file_to_use) 
 
