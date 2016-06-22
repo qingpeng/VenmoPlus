@@ -1,0 +1,49 @@
+v = sqlContext.createDataFrame([('_','_'),],["id", "name"])
+e = sqlContext.createDataFrame([('_','_','_'),],["src", "dst", "message"])
+g = GraphFrame(v, e)
+count = 0
+
+file_graph1_obj = "/home/ubuntu/Graph/venmo_1370291832.json"
+file_graph2_obj = "/home/ubuntu/Graph/venmo_1376956980.json"
+
+v_list = []
+e_list = []
+
+for line in file_graph1_obj:
+    line = line.rstrip()
+    fields = json.loads(line)
+    target_id = fields['transactions'][0]['target']['id']
+    actor_id = fields['actor']['id']
+    message = '0'
+    v_list.append((target_id,'0'))
+    v_list.append((actor_id,'0'))
+    e_list.append((target_id,actor_id,message))
+    e_list.append((actor_id,target_id,message))
+    
+v = sqlContext.createDataFrame(v_list,["id", "name"])
+e = sqlContext.createDataFrame(e_list,["src", "dst", "message"])
+g = GraphFrame(v, e)
+
+for line in file_graph2_obj:
+    line = line.rstrip()
+    fields = json.loads(line)
+    target_id = fields['transactions'][0]['target']['id']
+    actor_id = fields['actor']['id']
+    
+    BFS = g.bfs("id ="+target_id,"id ="+actor_id,maxPathLength=5)
+    if BFS.count() > 0:
+        distance = (len(BFS.columns) - 1)/2
+    else:
+        distance = 0
+    print target_id, actor_id, message, time, distance
+    new_e = sqlContext.createDataFrame([(actor_id,target_id,message),],["src", "dst", "message"])
+    new_v1 = sqlContext.createDataFrame([(actor_id, actor_name),],["id", "name"])
+    new_v2 = sqlContext.createDataFrame([(target_id, target_name),],["id", "name"])
+    v = v.unionAll(new_v1).unionAll(new_v2)
+    e = e.unionAll(new_e)
+    g = GraphFrame(v, e)
+    count += 1
+    if count >1000:
+        break
+    
+    
