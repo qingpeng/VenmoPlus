@@ -28,8 +28,8 @@ class Producer(object):
             if not item["payment_id"] in last_record_set:
                 message_info = "{}\n".format(json.dumps(item))
                 self.producer.send_messages(topic, source_symbol, message_info)
-                print message_info
-                print count
+#                print message_info
+#                print count
             
     
     def get_venmo(self,limit=300,page="https://venmo.com/api/v5/public?"):
