@@ -1,0 +1,10 @@
+purchase_type: on_demand
+subnet_id: subnet-34ea6950
+num_instances: 1
+key_name: qingpeng-zhang
+security_group_ids: sg-acb670ca
+instance_type: m4.large
+tag_name: kafka-qingpeng
+vol_size: 100
+role: worker
+use_eips: true
