@@ -17,3 +17,28 @@ run install.sh to launch AWS EC2 instances and install necessary packages.
 
 
 bash install.sh
+
+
+
+Elastic Search
+====
+
+connect to elasticsearch instance
+
+peg fetch $ec-cluster
+peg ssh $ec-cluster 1
+
+install 
+
+cd Downloads/
+wget https://download.elastic.co/kibana/kibana/kibana-4.5.1-linux-x64.tar.gz
+tar xzvf kibana-4.5.1-linux-x64.tar.gz
+cd kibana-4.5.1-linux-x64/
+./bin/kibana plugin --install elastic/sense
+./bin/kibana
+
+DNS:5601/
+
+
+
+
