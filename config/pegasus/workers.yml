@@ -1,0 +1,11 @@
+purchase_type: spot
+subnet_id: subnet-34ea6950
+price: 0.3
+num_instances: 5
+key_name: qingpeng-zhang
+security_group_ids: sg-acb670ca
+instance_type: m4.xlarge
+tag_name: spark2-qingpeng
+vol_size: 200
+role: worker
+use_eips: false
