@@ -41,4 +41,21 @@ DNS:5601/
 
 
 
+Kafka Setup
+======
+connect to kafka instance
+
+peg fetch $kafka-cluster
+peg ssh $kafka-cluster 1
+
+create topic for testing
+
+$ /usr/local/kafka/bin/kafka-topics.sh --create --zookeeper localhost:2181 --replication-factor 2 --partitions 2 --topic my-topic
+
+check topic list
+
+$ /usr/local/kafka/bin/kafka-topics.sh --describe --zookeeper localhost:2181 --topic my-topic
+
+/usr/local/kafka/bin/kafka-topics.sh --create --zookeeper localhost:2181 --replication-factor 2 --partitions 2 --topic venmo_test
+
 
