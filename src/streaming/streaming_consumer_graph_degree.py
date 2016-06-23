@@ -1,4 +1,3 @@
-ubuntu@ip-172-31-1-202:~/VenmoPlus/util$ more streaming_consumer_graph_degree.py
 from __future__ import print_function
 
 import sys
@@ -12,17 +11,20 @@ from pyspark.sql.types import *
 
 
 import json
+import redis
+from elasticsearch import Elasticsearch
 
-def process_RDD(RDD):
+def process_RDD(RDD,r0,r1,es):
 
     lines = RDD.collect()
     for line in lines:
-        process_line(line)
+        process_line(line,r0,r1,es)
     #RDD.foreach(process_line)
 
-def process_line(line):
+def process_line(line,r0,r1,es):
     line = line.rstrip()
     fields = json.loads(line)
+    es.index(index='venmo_test', doc_type='payment', body=fields)
     try:
         target_id = fields['transactions'][0]['target']['id']
         actor_id = fields['actor']['id']
@@ -31,58 +33,49 @@ def process_line(line):
         actor_name = fields['actor']['name']
         time = fields['updated_time']
         payment_id = fields['payment_id']
-#    payment_id.pprint()
-        try:
-            target_degree =degree_DF.filter(degree.id==target_id).first().degree
-        except:
-            target_degree = 0
-        try:
-            actor_degree =degree_DF.filter(degree.id==actor_id).first().degree
-        except:
-            actor_degree = 0
 
-
-        transaction = sqlContext.createDataFrame([(payment_id,actor_id,message,target_id,tim
-e,actor_degree,target_degree),], ["payment_id","actor_id","message","target_id","time","acto
-r_degree","target_degree"])
-        user =  sqlContext.createDataFrame([(target_id,target_name),(actor_id,actor_name),],
- ["id","name"])
-        user.show()
-        transaction.write.format("org.apache.spark.sql.cassandra").mode('append').options(ta
-ble="transaction_degree", keyspace="venmo_streaming").save()
-        user.write.format("org.apache.spark.sql.cassandra").mode('append').options(table="us
-er", keyspace="venmo_streaming").save()
+        r0.sadd(target_id,actor_id)
+        r0.sadd(actor_id,target_id)
+        r1.setnx(target_id,target_name)
+        r1.setnx(actor_id,actor_name)
     except:
         pass
+
+
+
+#        transaction = sqlContext.createDataFrame([(payment_id,actor_id,message,target_id,tim
+#e,actor_degree,target_degree),], ["payment_id","actor_id","message","target_id","time","acto
+#r_degree","target_degree"])
+#        user =  sqlContext.createDataFrame([(target_id,target_name),(actor_id,actor_name),],
+# ["id","name"])
+#        user.show()
+#        transaction.write.format("org.apache.spark.sql.cassandra").mode('append').options(ta
+#ble="transaction_degree", keyspace="venmo_streaming").save()
+#        user.write.format("org.apache.spark.sql.cassandra").mode('append').options(table="us
+#er", keyspace="venmo_streaming").save()
 #
 
 if __name__ == "__main__":
 
-
     sc = SparkContext(appName="PythonStreamingDirectKafkaWordCount")
     sqlContext = SQLContext(sc)
 
-
-#    file_graph_obj = open("/home/ubuntu/Graph/venmo_1370291832.json",'r')
-
-#    for line in file_graph_obj.readlines(20):
-#        process_line(line)
-
-#    exit()
-
-
     ssc = StreamingContext(sc, 2)
-    brokers = "ec2-52-40-166-123.us-west-2.compute.amazonaws.com:9092"
-    topic = "venmo2"
+    brokers = "52.40.167.57:9092"
+    topic = "venmo_test"
 
-    degree_DF = sqlContext.read.format("org.apache.spark.sql.cassandra").options(table="degr
-ee", keyspace="venmo_streaming").load()
-    degree_DF.cache()
+    r0 = redis.StrictRedis(host='52.11.57.125', port=6379, db=0)
+    r1 = redis.StrictRedis(host='52.11.57.125', port=6379, db=1)
+    es = Elasticsearch([{'host': '52.34.193.106', 'port': 9200}])
+
+  #  degree_DF = sqlContext.read.format("org.apache.spark.sql.cassandra").options(table="degr
+#ee", keyspace="venmo_streaming").load()
+#    degree_DF.cache()
     kvs = KafkaUtils.createDirectStream(ssc, [topic], {"metadata.broker.list": brokers})
     lines = kvs.map(lambda x: x[1])
 #    count2=lines.count()
 #    lines.pprint()
-    lines.foreachRDD(process_RDD)
+    lines.foreachRDD(process_RDD,r0,r1,es)
 
     #count2.pprint()
 
