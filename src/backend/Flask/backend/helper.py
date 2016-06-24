@@ -23,6 +23,24 @@ redis_server = "52.11.57.125"
 def get_friend(vertex):
     return r0.smembers(vertex)
 
+def get_name(user_id):
+    name = {}
+    name['id'] = user_id
+    name['name'] = r1.get(user_id)
+    return name
+
+def get_friend_list(user_id):
+    friend_list = []
+    for friend in r0.smembers(user_id):
+        friend_dict = {}
+        friend_dict['id'] = friend
+        friend_dict['name'] = r1.get(friend)
+        friend_dict['degree'] = get_degree(friend)
+        friend_list.append(friend_dict)
+    return friend_list
+
+
+
 def get_degree(vertex):
     return len(r0.smembers(vertex))
     
@@ -161,6 +179,14 @@ def get_recent_transactions(id): # for specific user, also with distance between
 	transaction_dict['actor_id'] = actor_id
 	transaction_dict['target_name'] = target_name
 	transaction_dict['target_id'] = target_id 
+        if distance == 0:
+            distance = "Totally Stranger!!"
+        elif distance == 1:
+            distance = "1st degree friend!"
+        elif distance == 2:
+            distance = "2nd degree friend!"
+        elif distance == 3:
+            distance = "3rd degree friend!"
 	transaction_dict['distance'] = distance
 	transaction_dict['time'] = time
 	transaction_dict['message'] = message
@@ -219,6 +245,7 @@ def search_message_in_circle(message,id,degree):
 
 import operator
 def list_user(name):
+    print name
 
     
     body_target = {

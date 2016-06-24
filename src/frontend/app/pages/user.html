@@ -1,11 +1,17 @@
-<h1> User: </h1>
+<h1> Happy Venmo, {{ name.name }}!</h1> 
+
+<div class="clearfix"></div>
+</br>
+</br>
 
 
-<h4> Search FUN(try "beer") in friend circles</h4>
+
+
+<h4> <u>Search FUN in your friend circles:</u></h4>
 
 <div style="margin-top: 10px;">
     <span class="col-md-6 col-md-offset-3">
-    <input type="text" class="form-control" ng-model="searchString" placeholder='Search:Message in friend circle ' ng-change="search()"/>
+    <input type="text" class="form-control" ng-model="searchString" placeholder='Search: try "food" ' ng-change="search()"/>
     </span>
 </div>
 
@@ -32,13 +38,13 @@
 <div class="clearfix"></div>
 
 <div class="clearfix"></div>
-<h4> Recent transactions: </h4>
+<h4> <u>Your recent transactions:</u></h4> <h5> (use "Relationship" to identify suspicious transactions): </h5>
 
 
 <table id="list_of_transactions" class="table table-striped table-condensed" style="margin-top: 10px;">
     <thead>
     <tr>
-        <th style="min-width: 20px;">Distance</th>
+        <th style="min-width: 20px;">Relationship</th>
         <th style="min-width: 40px;">Time</th>
         <th style="min-width: 60px;">PayerName</th>
         <th style="min-width: 60px;">ReceiverName</th>
@@ -58,22 +64,35 @@
 </table>
 <div class="clearfix"></div>
 <div class="clearfix"></div>
-
-<h4> Recommended Friends: </h4>
+<h4> <u>Have you met these guys?</u> </h4>
 <table id="list_of_user" class="table table-striped table-condensed" style="margin-top: 10px;">
-        <thead>
-                <tr>
-                            <th style="min-width: 80px;">userID</th>
-                                    <th style="min-width: 80px;">Name</th>
-                                            <th style="min-width: 80px;"># of shared friends</th>
-                                                </tr>
-                                                    </thead>
-                                                        <tbody>
-                                                            <tr ng-repeat="friend in friends">
-                                                                        <td>{{ friend.user_id }}</td>
-                                                                                <td>{{ friend.name }}</td>
-                                                                                        <td>{{ friend.shared_friend_count }}</td>
-                                                                                            </tr>
-                                                                                                </tbody>
-                                                                                            </table>
+    <thead>
+    <tr>
+    <th style="min-width: 80px;">Name</th>
+    <th style="min-width: 80px;"># of shared friends</th>
+    </tr>
+      </thead>
+      <tbody>
+         <tr ng-repeat="friend in friends">
+ <td><a href="#/user/{{friend.user_id}}">{{ friend.name }}</a></td>
+                    <td>{{ friend.shared_friend_count }}</td>
+                        </tr>
+                            </tbody>
+                        </table>
+
+<h4> <u>Your friends:</u> </h4>
+<table id="list_of_user" class="table table-striped table-condensed" style="margin-top: 10px;">
+    <thead>
+    <tr>
+    <th style="min-width: 80px;">Name</th>
+    <th style="min-width: 80px;">Degree</th>
+    </tr>
+      </thead>
+      <tbody>
+         <tr ng-repeat="friend in friend_list">
+ <td><a href="#/user/{{friend.id}}">{{ friend.name }}</a></td>
+                    <td>{{ friend.degree }}</td>
+                        </tr>
+                            </tbody>
+                        </table>
 
