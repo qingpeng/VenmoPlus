@@ -22,6 +22,8 @@ services
         query: { method: 'GET', isArray: true}
     });
 });
+//.factory('UserDetail', function($resource) {
+//    return $resource("
 
 
 
@@ -45,12 +47,15 @@ myApp.config(function($routeProvider) {
         templateUrl: 'pages/message.html',
         controller: 'messageController'
     })
-}
-);
+    .when('/user/:user_id', {
+        templateUrl: 'pages/user.html',
+        controller: 'userDetailsController'
+    })
+});
 
 
 myApp.controller(
-    'mainController',
+    'userController',
     function ($scope, Search) {
         $scope.search = function() {
             q = $scope.searchString;
@@ -62,7 +67,7 @@ myApp.controller(
 );
 
 myApp.controller(
-    'userController',
+    'mainController',
     function ($scope, User) {
         $scope.search = function() {
             q = $scope.searchString;
@@ -96,5 +101,24 @@ myApp.controller(
         };
     }
 );
+
+myApp.controller(
+    'userDetailsController', ['$scope', 'Search', 'Friend','Message','$routeParams',
+    function ($scope, Search, Friend, Message,$routeParams) {
+            $scope.results = Search.query({q: $routeParams.user_id});    
+            //$scope.user_id = $routeParams.user_id;
+            $scope.friends = Friend.query({q: $routeParams.user_id});
+            //var date = new Date(results['time'].concat(' UTC'));
+            //results['time'] = date.toString();
+            //$scope.results = results;
+            $scope.search = function() {
+                q = $scope.searchString;
+                if (q.length > 1) {
+                    $scope.search_results = Message.query({q: $routeParams.user_id,m:q});    
+                }
+        };
+            
+    }
+]);
 
 

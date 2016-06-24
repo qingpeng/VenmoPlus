@@ -291,7 +291,7 @@ def list_user(name):
         name_list = [{'user_id':'N/A','name':'N/A','transactions_number':'N/A','friend':'N/A'}]
         return name_list
 
-    if r1.get(final_list[1]) == name:
+    if r1.get(final_list[1]).lower() == name.lower():
         s = final_list.pop(0)
         final_list.insert(1,s)
 
