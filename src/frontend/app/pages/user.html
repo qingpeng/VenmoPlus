@@ -11,9 +11,11 @@
 <table id="list_of_user" class="table table-striped table-condensed" style="margin-top: 60px;">
     <thead>
     <tr>
-        <th style="min-width: 80px;">userID</th>
-        <th style="min-width: 80px;">Name</th>
-        <th style="min-width: 80px;">#Trasactions</th>
+        <th style="min-width: 15px;">userID</th>
+        <th style="min-width: 30px;">Name</th>
+        <th style="min-width: 15px;">#Trasactions</th>
+        <th style="min-width: 100px;">Friends</th>
+   
     </tr>
     </thead>
     <tbody>
@@ -21,6 +23,7 @@
         <td>{{ result.user_id }}</td>
         <td>{{ result.name }}</td>
         <td>{{ result.transactions_number }}</td>
+        <td>{{ result.friend }}</td>
     </tr>
     </tbody>
 </table>

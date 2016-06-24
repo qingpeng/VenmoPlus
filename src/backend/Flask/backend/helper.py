@@ -4,17 +4,21 @@ from elasticsearch.helpers import streaming_bulk,bulk,parallel_bulk
 
 
 # redis DB with edge info
-r0 = redis.StrictRedis(host="ec2-52-39-225-153.us-west-2.compute.amazonaws.com", port=6379, db=0)
+r0 = redis.StrictRedis(host="52.11.57.125", port=6379, db=0)
 
 # redis DB with userID: user name
-r1 = redis.StrictRedis(host="ec2-52-39-225-153.us-west-2.compute.amazonaws.com", port=6379, db=1)
+r1 = redis.StrictRedis(host="52.11.57.125", port=6379, db=1)
 
 es = Elasticsearch(
-   ['52.41.91.188:9200', '52.41.104.252:9200','52.26.39.161:9200'],
+   ['52.11.129.157:9200', '52.34.193.106:9200'],
    sniff_on_start=False,
    sniff_on_connection_fail=False,
    #sniffer_timeout=60
    )
+es_index = "venmo_test"
+es_type = "payment"
+redis_server = "52.11.57.125"
+
 
 def get_friend(vertex):
     return r0.smembers(vertex)
@@ -80,6 +84,9 @@ def friend_recommend(r0,r1,a):
         friend_dict['shared_friend_count'] = friend[1]
         friend_dict['name'] = r1.get(friend[0])
         friend_list.append(friend_dict)
+    if friend_list == []:
+	friend_list = [{'user_id':'N/A','shared_friend_count':'N/A','name':'N/A'}]
+
     return friend_list
  
 
@@ -99,7 +106,7 @@ def test_new_connection(a,b,updated_time): # test if this is the first connectio
              }
           }
     }
-    res = es.search(index="venmo",doc_type="transaction", body=query)
+    res = es.search(index=es_index,doc_type=es_type, body=query)
     if res['hits']['total'] == 0: 
     # current record has not been indexed by ES and no previous record
         return True
@@ -120,6 +127,7 @@ def test_new_connection(a,b,updated_time): # test if this is the first connectio
 import json
 
 def get_recent_transactions(id): # for specific user, also with distance between the pair of users.
+
     query ={ 
     "size":50, 
        "query" : {
@@ -136,9 +144,11 @@ def get_recent_transactions(id): # for specific user, also with distance between
           },
           "sort": { "created_time": { "order": "desc" }}
     }
-    res = es.search(index="venmo",doc_type="transaction", body=query)
+    res = es.search(index=es_index,doc_type=es_type, body=query)
     transactions = []
     for hit in res['hits']['hits']:
+	transaction_dict = {}
+
         payment_id = hit['_source']['payment_id']
         time = hit['_source']['updated_time']
         message = hit['_source']['message']
@@ -147,7 +157,16 @@ def get_recent_transactions(id): # for specific user, also with distance between
         target_id = hit['_source']['transactions'][0]['target']['id']
         target_name = hit['_source']['transactions'][0]['target']['name']
         distance = get_distance(r0,actor_id,target_id,time) # add time stamp
-        transactions.append([payment_id, time,message,actor_id,actor_name,target_id,target_name,distance])
+	transaction_dict['actor_name'] = actor_name
+	transaction_dict['actor_id'] = actor_id
+	transaction_dict['target_name'] = target_name
+	transaction_dict['target_id'] = target_id 
+	transaction_dict['distance'] = distance
+	transaction_dict['time'] = time
+	transaction_dict['message'] = message
+	transactions.append(transaction_dict)
+    if transactions == []:
+	transactions = [{'actor_name':'N/A','actor_id':'N/A','target_name':'N/A','target_id':'N/A','distance':'N/A','time':'N/A','message':'N/A'}]
     return transactions
     
 
@@ -172,7 +191,7 @@ def search_message_in_circle(message,id,degree):
       "sort": { "created_time": { "order": "desc" }
               }
         }
-    res = es.search(index="venmo",doc_type="transaction", body=query)
+    res = es.search(index=es_index,doc_type=es_type, body=query)
     transactions = []
     for hit in res['hits']['hits']:
 	transactions_dict = {}
@@ -209,7 +228,8 @@ def list_user(name):
   "aggs" :{
     "number": {
       "terms":{
-        "field":"transactions.target.id"
+        "field":"transactions.target.id",
+        "size": 0
       }
     }
   }
@@ -217,19 +237,21 @@ def list_user(name):
 
 
     body_actor = {
-  "query": {
+   "query": {
          "match": { "actor.name" : name }
   },
   "aggs" :{
     "number": {
       "terms":{
-        "field":"actor.id"
+        "field":"actor.id",
+        "size": 0
       }
     }
   }
 } 
-    res_target = es.search(index="venmo",doc_type="transaction", body=body_target)
-    res_actor = es.search(index="venmo",doc_type="transaction", body=body_actor)
+    res_target = es.search(index=es_index,doc_type=es_type, body=body_target)
+    #print res_target
+    res_actor = es.search(index=es_index,doc_type=es_type, body=body_actor)
     #print res_target
     #print "===============\n\n"
     #print res_actor
@@ -244,16 +266,45 @@ def list_user(name):
         else:
             id_dict[id['key']] =  id['doc_count']
     #print id_dict
-    sorted_id  = sorted(id_dict.items(), key=operator.itemgetter(1),reverse=True)
-    r1 = redis.StrictRedis(host="ec2-52-39-225-153.us-west-2.compute.amazonaws.com", port=6379, db=1)
+   # sorted_id  = sorted(id_dict.items(), key=operator.itemgetter(1),reverse=True)
+   # r1 = redis.StrictRedis(host=redis_server, port=6379, db=1)
+    hits_target = res_target["hits"]["hits"]
+    hits_actor = res_actor["hits"]["hits"]
 
+    final_list = []
+    #print len(hits_target)
+    #print range(len(hits_target))
+    #print res_target
+    #print hits_target
+ 
+    for i in range(len(hits_target)):
+   #     print i
+        item = hits_target[i]["_source"]["transactions"][0]["target"]["id"]
+   #     print item
+        if not item in final_list:
+            final_list.append(item)
+        item = hits_actor[i]["_source"]["actor"]["id"]
+        if not item in final_list:
+            final_list.append(item)
+   # print final_list    
+    if final_list == []:
+        name_list = [{'user_id':'N/A','name':'N/A','transactions_number':'N/A','friend':'N/A'}]
+        return name_list
 
-    sorted_name = [(x,r1.get(x),y,) for x,y in sorted_id]
+    if r1.get(final_list[1]) == name:
+        s = final_list.pop(0)
+        final_list.insert(1,s)
+
     name_list = []
-    for name in sorted_name:
+    for user_id in final_list:
         name_dict = {}
-        name_dict['user_id'] = name[0]
-        name_dict['name'] = name[1]
-        name_dict['transactions_number'] = name[2]
+        name_dict['user_id'] = user_id
+        name_dict['name'] = r1.get(user_id)
+        friends_list = r0.smembers(user_id)
+        friends_name_list = [r1.get(x) for x in friends_list]
+        friend_str = ', '.join(friends_name_list)[0:100]
+        name_dict['transactions_number'] = id_dict[user_id]
+        name_dict['friend'] = friend_str
         name_list.append(name_dict)
+
     return name_list
