@@ -15,10 +15,10 @@ es = Elasticsearch(
    sniff_on_connection_fail=False,
    #sniffer_timeout=60
    )
-#es_index = ["venmo_test","venmo"]
-es_index = "venmo_test"
-es_type = "payment"
-#es_type = ["payment","filter6"]
+es_index = ["venmo_test","venmo2018"]
+#es_index = "venmo_test"
+#es_type = "payment"
+es_type = ["payment","transaction"]
 redis_server = "52.11.57.125"
 
 
@@ -239,7 +239,8 @@ def search_message_in_circle(message,id,degree):
 	transactions_dict['time'] = time
 	transactions_dict['message'] = message
 	transactions.append(transactions_dict)
-
+    if transactions == []:
+        transactions = [{'message':'N/A','time':'N/A','actor_name':'N/A','target_name':'N/A'}]
  
     return transactions
 
@@ -305,24 +306,34 @@ def list_user(name):
     #print range(len(hits_target))
     #print res_target
     #print hits_target
- 
-    for i in range(len(hits_target)):
+    if len(hits_target) > len(hits_actor):
+        size = len(hits_target)
+    else:
+        size = len(hits_actor)
+    for i in range(size):
    #     print i
-        item = hits_target[i]["_source"]["transactions"][0]["target"]["id"]
+        try:
+            item = hits_target[i]["_source"]["transactions"][0]["target"]["id"]
    #     print item
-        if not item in final_list:
-            final_list.append(item)
-        item = hits_actor[i]["_source"]["actor"]["id"]
-        if not item in final_list:
-            final_list.append(item)
+            if not item in final_list:
+                final_list.append(item)
+        except IndexError:
+            pass
+        try:
+            item = hits_actor[i]["_source"]["actor"]["id"]
+            if not item in final_list:
+                final_list.append(item)
+        except IndexError:
+            pass
+
    # print final_list    
     if final_list == []:
         name_list = [{'user_id':'N/A','name':'N/A','transactions_number':'N/A','friend':'N/A'}]
         return name_list
-
-    if r1.get(final_list[1]).lower() == name.lower():
-        s = final_list.pop(0)
-        final_list.insert(1,s)
+    if len(final_list)>1:
+        if r1.get(final_list[1]).lower() == name.lower():
+            s = final_list.pop(0)
+            final_list.insert(1,s)
 
     name_list = []
     for user_id in final_list:
