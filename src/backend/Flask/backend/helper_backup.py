@@ -182,13 +182,13 @@ def get_recent_transactions(id): # for specific user, also with distance between
 	transaction_dict['target_name'] = target_name
 	transaction_dict['target_id'] = target_id 
         if distance == 0:
-            distance = ">3rd degree connection   (Know this guy???)"
+            distance = "Totally Stranger!!"
         elif distance == 1:
-            distance = "1st degree connection!"
+            distance = "1st degree friend!"
         elif distance == 2:
-            distance = "2nd degree connection!"
+            distance = "2nd degree friend!"
         elif distance == 3:
-            distance = "3rd degree connection!"
+            distance = "3rd degree friend!"
 	transaction_dict['distance'] = distance
 	transaction_dict['time'] = time
 	transaction_dict['message'] = message
@@ -253,30 +253,30 @@ def list_user(name):
     body_target = {
   "query": {
          "match": { "transactions.target.name" : name }
+  },
+  "aggs" :{
+    "number": {
+      "terms":{
+        "field":"transactions.target.id",
+        "size": 0
+      }
+    }
   }
-#  "aggs" :{
-#    "number": {
-#      "terms":{
-#        "field":"transactions.target.id",
-#        "size": 0
-#      }
-#    }
-#  }
 }
 
 
     body_actor = {
    "query": {
          "match": { "actor.name" : name }
+  },
+  "aggs" :{
+    "number": {
+      "terms":{
+        "field":"actor.id",
+        "size": 0
+      }
+    }
   }
- # "aggs" :{
- #   "number": {
- #     "terms":{
- #       "field":"actor.id",
- #       "size": 0
- #     }
- #   }
- # }
 } 
     res_target = es.search(index=es_index,doc_type=es_type, body=body_target)
     #print res_target
@@ -286,14 +286,14 @@ def list_user(name):
     #print res_actor
     #print res_target['aggregations']['number']['buckets']
     #print res_actor['aggregations']['number']['buckets']
-#    ids = res_target['aggregations']['number']['buckets']+res_actor['aggregations']['number']['buckets']
+    ids = res_target['aggregations']['number']['buckets']+res_actor['aggregations']['number']['buckets']
     #print ids
-#    id_dict = {}
-#    for id in ids:
-#        if id["key"] in id_dict:
-#            id_dict[id['key']] +=  id['doc_count']
-#        else:
-#            id_dict[id['key']] =  id['doc_count']
+    id_dict = {}
+    for id in ids:
+        if id["key"] in id_dict:
+            id_dict[id['key']] +=  id['doc_count']
+        else:
+            id_dict[id['key']] =  id['doc_count']
     #print id_dict
    # sorted_id  = sorted(id_dict.items(), key=operator.itemgetter(1),reverse=True)
    # r1 = redis.StrictRedis(host=redis_server, port=6379, db=1)
@@ -335,7 +335,7 @@ def list_user(name):
             friend_str = ', '.join(friends_name_list)[0:100]
         except:
             friend_str = ""
-        name_dict['transactions_number'] = "N/A" #id_dict[user_id]
+        name_dict['transactions_number'] = id_dict[user_id]
         name_dict['friend'] = friend_str
         name_list.append(name_dict)
 

@@ -13,6 +13,14 @@ app = Flask(__name__)
 CORS(app)
 api = Api(app)
 
+@app.after_request
+def after_request(response):
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
+    response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE')
+    return response
+
+
 parser = reqparse.RequestParser()
 
 class User(Resource):
@@ -44,7 +52,7 @@ class Message(Resource):
 	#	url = config.es_base_url['venmo']+'/_user'
 		user_id = query_string['q']
 		message = query_string['m']
-		transactions = search_message_in_circle(message,user_id,2)
+		transactions = search_message_in_circle(message,user_id,1)
 		return transactions		
 
 class Name(Resource):
@@ -84,9 +92,5 @@ api.add_resource(Friend, config.api_base_url+'/friend')
 api.add_resource(Message, config.api_base_url+'/message')
 api.add_resource(List, config.api_base_url+'/list')
 api.add_resource(Name, config.api_base_url+'/name')
-
-
-
-
 
 
