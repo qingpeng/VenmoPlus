@@ -1,19 +1,32 @@
-# VenmoPlus
+### Explore your Venmo network! 
+####an insight data engineering program project
+
 
 ./src/
 
-./src/batch/ scripts to load data from S3 into Redis and Elasticsearch DB
+./src/batch/ 
 
-./src/streaming scripts to impliment streaming/real time pipeline, from Venmo API to Redis and Elasticsearch DB
+scripts to load historic transactions data from S3 into Redis and Elasticsearch DB
 
-./src/backend scripts working with Flask to build APIs
+./src/streaming 
 
-./src/frontend scripts working with AngularJS to build web interface
+scripts working with Spark Streaming to impliment streaming/real time pipeline, from Venmo API to Redis and Elasticsearch
 
+./src/backend 
 
-./docs/    instructions about setup, launch the website
+scripts working with Flask to build APIs
+
+./src/frontend 
+
+scripts working with AngularJS to build web interface
+
+./docs/    
+
+instructions about setup, launch the website
   
-demo video:
+demo video: https://www.youtube.com/watch?v=a_qULTlw1e4
+demo slides: http://www.slideshare.net/qingpeng/qingpeng-zhang-week5
 
-https://www.youtube.com/watch?v=a_qULTlw1e4
+pipeline:
+![alt text](https://raw.githubusercontent.com/qingpeng/VenmoPlus/master/docs/pipeline.png "Pipeline")
 
