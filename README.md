@@ -1,5 +1,8 @@
+# VenmoPlus.com
 ### Explore your Venmo network! 
 ####an insight data engineering program project
+
+http://www.venmoplus.com
 
 
 ./src/
@@ -25,6 +28,7 @@ scripts working with AngularJS to build web interface
 instructions about setup, launch the website
   
 demo video: https://www.youtube.com/watch?v=a_qULTlw1e4
+
 demo slides: http://www.slideshare.net/qingpeng/qingpeng-zhang-week5
 
 pipeline:
