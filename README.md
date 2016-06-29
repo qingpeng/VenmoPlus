@@ -32,5 +32,12 @@ demo video: https://www.youtube.com/watch?v=a_qULTlw1e4
 demo slides: http://www.slideshare.net/qingpeng/qingpeng-zhang-week5
 
 pipeline:
+
 ![alt text](https://raw.githubusercontent.com/qingpeng/VenmoPlus/master/docs/pipeline.png "Pipeline")
+
+system:
+
+![alt text](https://raw.githubusercontent.com/qingpeng/VenmoPlus/master/docs/system.png "System")
+
+
 
