@@ -4,12 +4,23 @@
 
 http://www.venmoplus.com
 
-####Feature (here, "friends" mean people who have done transanctions with the user.)
+demo slides: http://www.slideshare.net/qingpeng/0629venmoplus
+
+demo video: https://www.youtube.com/watch?v=a_qULTlw1e4
+
+
+
+####Features
+
+(here, "friends" mean people who have done transanctions with the user.)
 * fuzzy searching of user name, with friend list to help identify users with same name
-* list recent transactions, and label the relationship between the payer and receiver, which can be used as a signal for fraud detection. The longest relationship that can be identify is 3rd degree connection, as LinkedIn does. This is not a trivial task!
+* list recent transactions for a specific user
+* label the relationship between the payer and receiver, which can be used as a signal for fraud detection. The longest relationship that can be identify is 3rd degree connection, as LinkedIn does. This is not a trivial task!
 * friend recommendation, list the friends of your friends who share some friends with you but not your friends yet
 * search transactions in your history and the transactions related to your friends with specific items
 * list friends of the user and the number of their friends (degree)
+
+####Repo Structure
 
 ./src/
 
@@ -32,30 +43,27 @@ scripts working with AngularJS to build web interface
 ./docs/    
 
 instructions about setup, launch the website
-  
-demo video: https://www.youtube.com/watch?v=a_qULTlw1e4
 
-demo slides: http://www.slideshare.net/qingpeng/0629venmoplus
 
-pipeline:
+####Pipeline
 
 ![alt text](https://raw.githubusercontent.com/qingpeng/VenmoPlus/master/docs/pipeline.png "Pipeline")
 
-system:
+####System
 
 ![alt text](https://raw.githubusercontent.com/qingpeng/VenmoPlus/master/docs/system.png "System")
 
 
-###Design and Optimizations
+####Design and Optimizations
 
-####Algorithm 1
+#####Algorithm 1
 Shortest distance -> intersection of sets (friend lists)
 
 1st degree friends of A ∩ 1st degree friends of B == [] ?
 
 2nd degree friends of A ∩ 1st degree friends of B == []?
 
-####Algorithm 2
+#####Algorithm 2
 Query distance between vertices in a historic moment in a constantly changing graph (because we don’t pre-calculate the distance….)
 A recent transaction for a user is history and has changed the graph
 
