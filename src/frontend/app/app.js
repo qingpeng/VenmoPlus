@@ -21,7 +21,20 @@ services
     return $resource('http://52.40.84.152:5000/api/v1/message', {q: '@q', m: '@m'}, {
         query: { method: 'GET', isArray: true}
     });
-});
+})
+.factory('Name', function($resource) {
+    return $resource('http://52.40.84.152:5000/api/v1/name', {q: '@q'}, {
+        query: { method: 'GET', isArray: false}
+    });
+})
+.factory('List', function($resource) {
+    return $resource('http://52.40.84.152:5000/api/v1/list', {q: '@q'}, {
+        query: { method: 'GET', isArray: true}
+    });
+})
+
+//.factory('UserDetail', function($resource) {
+//    return $resource("
 
 
 
@@ -45,16 +58,19 @@ myApp.config(function($routeProvider) {
         templateUrl: 'pages/message.html',
         controller: 'messageController'
     })
-}
-);
+    .when('/user/:user_id', {
+        templateUrl: 'pages/user.html',
+        controller: 'userDetailsController'
+    })
+});
 
 
 myApp.controller(
-    'mainController',
+    'userController',
     function ($scope, Search) {
         $scope.search = function() {
             q = $scope.searchString;
-            if (q.length > 1) {
+            if (q.length > 3) {
                 $scope.results = Search.query({q: q});    
             }
         };
@@ -62,14 +78,25 @@ myApp.controller(
 );
 
 myApp.controller(
-    'userController',
+    'mainController',
     function ($scope, User) {
         $scope.search = function() {
             q = $scope.searchString;
-            if (q.length > 1) {
+            if (q.length > 3) {
                 $scope.results = User.query({q: q});    
+                console.log("d")
+                console.log($scope.results)
+                if ($scope.results.length > 0){
+                    $scope.list = ["1"]
+                    console.log($scope.list)
+                }
+                else {
+                    $scope.list = []
+                    console.log($scope.list)
+                }
             }
         };
+        
     }
 );
 
@@ -78,7 +105,7 @@ myApp.controller(
     function ($scope, Friend) {
         $scope.search = function() {
             q = $scope.searchString;
-            if (q.length > 4) {
+            if (q.length > 3) {
                 $scope.results = Friend.query({q: q});    
             }
         };
@@ -96,5 +123,26 @@ myApp.controller(
         };
     }
 );
+
+myApp.controller(
+    'userDetailsController', ['$scope', 'Search', 'Friend','Message','Name','List','$routeParams',
+    function ($scope, Search, Friend, Message,Name, List,$routeParams) {
+            $scope.results = Search.query({q: $routeParams.user_id});    
+            //$scope.user_id = $routeParams.user_id;
+            $scope.friends = Friend.query({q: $routeParams.user_id});
+            $scope.name = Name.query({q: $routeParams.user_id});
+            $scope.friend_list = List.query({q: $routeParams.user_id});
+            //var date = new Date(results['time'].concat(' UTC'));
+            //results['time'] = date.toString();
+            //$scope.results = results;
+            $scope.search = function() {
+                q = $scope.searchString;
+                if (q.length > 1) {
+                    $scope.search_results = Message.query({q: $routeParams.user_id,m:q});    
+                }
+        };
+            
+    }
+]);
 
 

@@ -1,3 +1,5 @@
+# ingest real time transaction from Venmo API and send them to Kafka
+# 
 import random
 import sys
 import six
@@ -22,18 +24,24 @@ class Producer(object):
     def produce_msgs(self, topic, source_symbol, last_record_set):
         self.record_set = set()
         count = 0
-        for item in self.r["data"]:
-            self.record_set.add(item["payment_id"])
-            count += 1
-            if not item["payment_id"] in last_record_set:
-                message_info = "{}\n".format(json.dumps(item))
-                self.producer.send_messages(topic, source_symbol, message_info)
-                print message_info
-                print count
-            
+	try:
+		for item in self.r["data"]:
+		    self.record_set.add(item["payment_id"])
+		    count += 1
+		    if not item["payment_id"] in last_record_set:
+			message_info = "{}\n".format(json.dumps(item))
+			self.producer.send_messages(topic, source_symbol, message_info)
+	#                print message_info
+	#                print count
+	except:
+		k = 1
+		    
     
     def get_venmo(self,limit=300,page="https://venmo.com/api/v5/public?"):
-        self.r = self.sess.get(page + "&limit={}".format(limit)).json()
+	try:
+                self.r = self.sess.get(page + "&limit={}".format(limit)).json()
+	except:
+		self.r = ""
         
         
 
@@ -49,7 +57,8 @@ if __name__ == "__main__":
 
         prod = Producer(ip_addr)
         prod.get_venmo()
-
+	if prod.r == "":# if error while connecting to Venmo API
+		continue
         prod.produce_msgs(topic, partition_key, last_record_set) 
         last_record_set = prod.record_set
         end_time = int(time.time())
