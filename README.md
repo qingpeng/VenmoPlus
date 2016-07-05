@@ -4,7 +4,7 @@
 
 http://www.venmoplus.com
 
-demo slides: http://www.slideshare.net/qingpeng/0629venmoplus
+demo slides: http://www.slideshare.net/qingpeng/venmoplus-demo-week6
 
 demo video: https://www.youtube.com/watch?v=a_qULTlw1e4
 
@@ -56,14 +56,20 @@ instructions about setup, launch the website
 
 ####Design and Optimizations
 
-#####Algorithm 1
+#####Replace BFS with Bidirectional Search  
+
 Shortest distance -> intersection of sets (friend lists)
 
 1st degree friends of A ∩ 1st degree friends of B == [] ?
 
+O(N^2) -> O(2*N)
+
 2nd degree friends of A ∩ 1st degree friends of B == []?
 
-#####Algorithm 2
+ O(N^3) -> O(N + N^2)
+ 
+#####Real time distance query
+
 Query distance between vertices in a historic moment in a constantly changing graph (because we don’t pre-calculate the distance….)
 A recent transaction for a user is history and has changed the graph
 
@@ -72,11 +78,10 @@ Query distance of the two users at that moment. (not considering that specific t
 Remove the influence of that specific transaction temporarily and restore later
 Test if that transaction is the first between the pair of users.
 
-###Query and Search optimizations
+#####Query and Search optimizations
 
 1. Remove aggregation for better performance… (trade-off)
-2. Friend recommender: 
-- Using Counter to get only 5 users with the most common friends
+2. Friend recommender: Using Counter to get only 5 users with the most common friends
 3. Search message in friend circle
 4. Combine query of Elasticsearch and Redis
 
