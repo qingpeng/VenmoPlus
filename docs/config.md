@@ -58,4 +58,14 @@ $ /usr/local/kafka/bin/kafka-topics.sh --describe --zookeeper localhost:2181 --t
 
 /usr/local/kafka/bin/kafka-topics.sh --create --zookeeper localhost:2181 --replication-factor 2 --partitions 2 --topic venmo_test
 
+install redis elasticsearch support for spark
+=====
+
+peg ssh spark-qingpeng 2
+sudo pip install redis
+sudo pip install elasticsearch
+
+peg ssh spark-qingpeng 1
+sudo pip install redis
+sudo pip install elasticsearch
 
