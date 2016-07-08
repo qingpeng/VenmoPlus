@@ -84,15 +84,11 @@ myApp.controller(
             q = $scope.searchString;
             if (q.length > 3) {
                 $scope.results = User.query({q: q});    
-                console.log("d")
-                console.log($scope.results)
                 if ($scope.results.length > 0){
                     $scope.list = ["1"]
-                    console.log($scope.list)
                 }
                 else {
                     $scope.list = []
-                    console.log($scope.list)
                 }
             }
         };

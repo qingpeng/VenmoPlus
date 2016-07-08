@@ -259,6 +259,7 @@ def list_user(name):
 
     
     body_target = {
+  "size":10,
   "query": {
          "match": { "transactions.target.name" : name }
   }
@@ -273,6 +274,7 @@ def list_user(name):
 
 
     body_actor = {
+   "size":10,
    "query": {
          "match": { "actor.name" : name }
   }
@@ -302,19 +304,20 @@ def list_user(name):
 
     final_list = []
     #print len(hits_target) print range(len(hits_target)) print res_target print hits_target
-    if len(hits_target) > len(hits_actor):
-        size = len(hits_target)
-    else:
-        size = len(hits_actor)
-    for i in range(size):
+   # if len(hits_target) > len(hits_actor):
+   #     size = len(hits_target)
+   # else:
+   #     size = len(hits_actor)
+    for i in range(10):
    #     print i
         try:
             item = hits_target[i]["_source"]["transactions"][0]["target"]["id"]
-   #     print item
+            #print item
             if not item in final_list:
                 final_list.append(item)
         except IndexError:
             pass
+        #print "here"
         try:
             item = hits_actor[i]["_source"]["actor"]["id"]
             if not item in final_list:
