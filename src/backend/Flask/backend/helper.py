@@ -1,5 +1,5 @@
-import redis
-from elasticsearch import Elasticsearch
+import redis 
+from elasticsearch import Elasticsearch 
 from elasticsearch.helpers import streaming_bulk,bulk,parallel_bulk
 
 
@@ -10,13 +10,13 @@ r0 = redis.StrictRedis(host="52.11.57.125", port=6379, db=0)
 r1 = redis.StrictRedis(host="52.11.57.125", port=6379, db=1)
 
 es = Elasticsearch(
-   ['52.11.129.157:9200', '52.34.193.106:9200'],
+        ['52.34.193.106:9200'],
    sniff_on_start=False,
    sniff_on_connection_fail=False,
    #sniffer_timeout=60
    )
 es_index = ["venmo_test","venmo2018"]
-#es_index = "venmo_test"
+#es_index = "venmo_test" 
 #es_type = "payment"
 es_type = ["payment","transaction"]
 redis_server = "52.11.57.125"
@@ -53,36 +53,38 @@ def get_2nd_friend(vertex):
         second_degree = second_degree.union(r0.smembers(s))
     return second_degree-friends
     
-def get_distance(r,a,b,updated_time): # if updated_time ='n/a', if there is one record in ES, assume it is not current, 
-    # so the record is old, no new conenction, distance  = 1
+def get_distance(r,a,b,updated_time): # if updated_time ='n/a', if there is one record in ES, assume it is not 
+    # so there are transactions before this one, so distance is 1
     if test_new_connection(a,b,updated_time) == False:
         return 1
  #   if a in r.smembers(b) or b in r.smembers(a):
  #       return 1
     else:
         r.srem(a,b)
+        r.srem(b,a)
         
         if r.smembers(a).isdisjoint(r.smembers(b)) !=True:
             r.sadd(a,b)
+            r.sadd(b,a)
             return 2
         else:
 
             second_degree = set()
             for s in r.smembers(a):
                 second_degree = second_degree.union(r.smembers(s))
-            #print second_degree
-            #print r.smembers(b)
-            #print second_degree & r.smembers(b)
+            #print second_degree print r.smembers(b) print second_degree & r.smembers(b)
             if second_degree.isdisjoint(r.smembers(b)):
                 r.sadd(a,b)
+                r.sadd(b,a)
                 return 0
             else:
                 r.sadd(a,b)
+                r.sadd(b,a)
                 return 3
         
         
 
-from collections import Counter
+from collections import Counter 
 def friend_recommend(r0,r1,a):
     
     second_degree = []
@@ -113,32 +115,37 @@ def friend_recommend(r0,r1,a):
 
 
 def test_new_connection(a,b,updated_time): # test if this is the first connection between the two users.
-    query ={ 
-    "size":2, 
-       "query" : {
+    query ={
+    "size":1,
+            "query" : {
 
-                "bool" : {
-                  "must" : [
-                     { "term" : {"actor.id" : a}}, 
-                     { "term" : {"transactions.target.id" : b}} 
-                  ]
-
-             }
-          }
+                     "bool" : {
+                       "should":[{
+                         "bool":{
+                       "must" : [
+                          { "term" : {"actor.id" : a}},
+                          { "term" : {"transactions.target.id" : b}},
+                          {"range": {"updated_time":{"lt":updated_time}}}
+                       ]
+                       }},
+                       {"bool":{
+                   
+                       "must" : [
+                          { "term" : {"actor.id" : b}},
+                          { "term" : {"transactions.target.id" : a}},
+                          {"range": {"updated_time":{"lt":updated_time}}}
+                       ]
+                       }
+                       }]
+                  }
+               }
+           
     }
     res = es.search(index=es_index,doc_type=es_type, body=query)
-    if res['hits']['total'] == 0: 
-    # current record has not been indexed by ES and no previous record
+    print a,b,updated_time,res['hits']['total']
+    if res['hits']['total'] == 0:
+        # no transactions before this one
         return True
-    elif res['hits']['total'] == 1 :
-        if res['hits']['hits'][0]['_source']['updated_time'] == updated_time:
-              # only current record in ES 
-            return True
-        
-        else:
-            # older 1 record in ES
-            return False
-      
 
     else:
          # more than 1 records in ES
@@ -148,15 +155,15 @@ import json
 
 def get_recent_transactions(id): # for specific user, also with distance between the pair of users.
 
-    query ={ 
-    "size":50, 
+    query ={
+    "size":50,
        "query" : {
-          "constant_score" : { 
+          "constant_score" : {
              "filter" : {
                 "bool" : {
                   "should" : [
-                     { "term" : {"actor.id" : id}}, 
-                     { "term" : {"transactions.target.id" : id}} 
+                     { "term" : {"actor.id" : id}},
+                     { "term" : {"transactions.target.id" : id}}
                   ]
                   }
                }
@@ -180,15 +187,15 @@ def get_recent_transactions(id): # for specific user, also with distance between
 	transaction_dict['actor_name'] = actor_name
 	transaction_dict['actor_id'] = actor_id
 	transaction_dict['target_name'] = target_name
-	transaction_dict['target_id'] = target_id 
+	transaction_dict['target_id'] = target_id
         if distance == 0:
-            distance = ">3rd degree connection   (Know this guy???)"
+            distance = ">3rd degree connection (Know this guy???)"
         elif distance == 1:
-            distance = "1st degree connection!"
+            distance = "1st"
         elif distance == 2:
-            distance = "2nd degree connection!"
+            distance = "2nd"
         elif distance == 3:
-            distance = "3rd degree connection!"
+            distance = "3rd"
 	transaction_dict['distance'] = distance
 	transaction_dict['time'] = time
 	transaction_dict['message'] = message
@@ -205,14 +212,14 @@ def search_message_in_circle(message,id,degree):
         friend_list = list(get_friend(id))
     #print friend_list
     query = {
-        "size":50, 
+        "size":50,
     "query" : {
 
             "bool" : {
               "should" : [
-                 { "terms" : {"actor.id" : friend_list}}, 
+                 { "terms" : {"actor.id" : friend_list}},
                  { "terms" : {"transactions.target.id" : friend_list}}], "minimum_should_match": 1,
-            "must":  { "match" : {"message" : message}} 
+            "must": { "match" : {"message" : message}}
               
               }
       },
@@ -246,7 +253,7 @@ def search_message_in_circle(message,id,degree):
 
 
 
-import operator
+import operator 
 def list_user(name):
     print name
 
@@ -258,8 +265,7 @@ def list_user(name):
 #  "aggs" :{
 #    "number": {
 #      "terms":{
-#        "field":"transactions.target.id",
-#        "size": 0
+#        "field":"transactions.target.id", "size": 0
 #      }
 #    }
 #  }
@@ -273,8 +279,7 @@ def list_user(name):
  # "aggs" :{
  #   "number": {
  #     "terms":{
- #       "field":"actor.id",
- #       "size": 0
+ #       "field":"actor.id", "size": 0
  #     }
  #   }
  # }
@@ -282,30 +287,21 @@ def list_user(name):
     res_target = es.search(index=es_index,doc_type=es_type, body=body_target)
     #print res_target
     res_actor = es.search(index=es_index,doc_type=es_type, body=body_actor)
-    #print res_target
-    #print "===============\n\n"
-    #print res_actor
-    #print res_target['aggregations']['number']['buckets']
-    #print res_actor['aggregations']['number']['buckets']
+    #print res_target print "===============\n\n" print res_actor print 
+    #res_target['aggregations']['number']['buckets'] print res_actor['aggregations']['number']['buckets']
 #    ids = res_target['aggregations']['number']['buckets']+res_actor['aggregations']['number']['buckets']
     #print ids
-#    id_dict = {}
-#    for id in ids:
+#    id_dict = {} for id in ids:
 #        if id["key"] in id_dict:
-#            id_dict[id['key']] +=  id['doc_count']
-#        else:
-#            id_dict[id['key']] =  id['doc_count']
+#            id_dict[id['key']] += id['doc_count'] else: id_dict[id['key']] = id['doc_count']
     #print id_dict
-   # sorted_id  = sorted(id_dict.items(), key=operator.itemgetter(1),reverse=True)
-   # r1 = redis.StrictRedis(host=redis_server, port=6379, db=1)
+   # sorted_id = sorted(id_dict.items(), key=operator.itemgetter(1),reverse=True) r1 = 
+   # redis.StrictRedis(host=redis_server, port=6379, db=1)
     hits_target = res_target["hits"]["hits"]
     hits_actor = res_actor["hits"]["hits"]
 
     final_list = []
-    #print len(hits_target)
-    #print range(len(hits_target))
-    #print res_target
-    #print hits_target
+    #print len(hits_target) print range(len(hits_target)) print res_target print hits_target
     if len(hits_target) > len(hits_actor):
         size = len(hits_target)
     else:
@@ -326,7 +322,7 @@ def list_user(name):
         except IndexError:
             pass
 
-   # print final_list    
+   # print final_list
     if final_list == []:
         name_list = [{'user_id':'N/A','name':'N/A','transactions_number':'N/A','friend':'N/A'}]
         return name_list
