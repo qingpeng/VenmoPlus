@@ -28,17 +28,47 @@ demo video: https://www.youtube.com/watch?v=a_qULTlw1e4
 
 scripts to load historic transactions data from S3 into Redis and Elasticsearch DB
 
+redis_proc_for_edge.py: load edge information to Redis, key: user_id value: set with friend list 
+redis_proc_for_id.py: load node information to Redis, key: user_id value: user_name
+
+load_into_es.py: load records to elasticsearch
+
+helper.scala: helper code for loading data from S3 to databases distributedly 
+
+load_to_es.scala: load json files from S3 to elasticsearch using connector
+
 ./src/streaming 
 
 scripts working with Spark Streaming to impliment streaming/real time pipeline, from Venmo API to Redis and Elasticsearch
+
+kafka_producer_venmo_api.py: get realtime transactions from venmo API and send to kafka
+
+streaming_consumer_venmo.py: script working with Spark Streaming to consume messages from kafka and store the records into Elasticsearch and Redis
 
 ./src/backend 
 
 scripts working with Flask to build APIs
 
+./Flask/runbackend.py: script to launch flask server for API
+
+./Flask/backend/__init__.py: script to build API
+
+./Flask/backend/helper.py: script to implement functions for building API
+
+
 ./src/frontend 
 
-scripts working with AngularJS to build web interface
+stuffs working with AngularJS to build web interface
+
+./app/app.js: AngularJS script to implement frontend function
+
+./app/index.html: default page template
+
+./app/pages/main.html: homepage
+
+./app/pages/user.html: user page
+
+
 
 ./docs/    
 
