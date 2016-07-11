@@ -15,7 +15,7 @@ demo video: https://www.youtube.com/watch?v=a_qULTlw1e4
 (here, "friends" mean people who have done transanctions with the user.)
 * fuzzy searching of user name, with friend list to help identify users with same name
 * list recent transactions for a specific user
-* label the relationship between the payer and receiver, which can be used as a signal for fraud detection. The longest relationship that can be identify is 3rd degree connection, as LinkedIn does. This is not a trivial task!
+* **label the relationship between the payer and receiver**, which can be used as a signal for fraud detection. The longest relationship that can be identify is 3rd degree connection, as LinkedIn does. This is not a trivial task!
 * friend recommendation, list the friends of your friends who share some friends with you but not your friends yet
 * search transactions in your history and the transactions related to your friends with specific items
 * list friends of the user and the number of their friends (degree)
