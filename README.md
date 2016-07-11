@@ -22,7 +22,7 @@ demo video: https://www.youtube.com/watch?v=a_qULTlw1e4
 
 ####Repo Structure
 
-`./src/` all the important files are here
+**`./src/`** all the important files are here
 
 `./src/batch/` scripts to load historic transactions data from S3 into Redis and Elasticsearch DB
 
@@ -36,13 +36,13 @@ demo video: https://www.youtube.com/watch?v=a_qULTlw1e4
 
 - `load_to_es.scala`: load json files from S3 to elasticsearch using connector
 
-`./src/streaming ` scripts working with Spark Streaming to impliment streaming/real time pipeline, from Venmo API to Redis and Elasticsearch
+**`./src/streaming `** scripts working with Spark Streaming to impliment streaming/real time pipeline, from Venmo API to Redis and Elasticsearch
 
 - `kafka_producer_venmo_api.py`: get realtime transactions from venmo API and send to kafka
 
 - `streaming_consumer_venmo.py`: script working with Spark Streaming to consume messages from kafka and store the records into Elasticsearch and Redis
 
-`./src/backend` scripts working with Flask to build APIs
+**`./src/backend`** scripts working with Flask to build APIs
 
 - `./Flask/runbackend.py`: script to launch flask server for API
 
@@ -51,7 +51,7 @@ demo video: https://www.youtube.com/watch?v=a_qULTlw1e4
 - `./Flask/backend/helper.py`: script to implement functions for building API
 
 
-`./src/frontend` stuffs working with AngularJS to build web interface
+**`./src/frontend`** stuffs working with AngularJS to build web interface
 
 - `./app/app.js`: AngularJS script to implement frontend function
 
@@ -61,7 +61,7 @@ demo video: https://www.youtube.com/watch?v=a_qULTlw1e4
 
 - `./app/pages/user.html`: user page
 
-`./docs/` instructions about setup, launch the website
+**`./docs/`** instructions about setup, launch the website
 
 
 ####Pipeline
