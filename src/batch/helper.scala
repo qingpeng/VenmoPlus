@@ -39,7 +39,7 @@ val line1RDD = sc.parallelize(records(0) ::Nil)
 val df1 = sqlContext.read.json(line1RDD)
 
 
-spark-shell --jars /home/ubuntu/Downloads/spark-redis/target/spas-0.1.1-jar-with-dependencies.jar, /home/ubuntu/Downloads/jedis-jedis-2.8.1/target/jedis-2.8.1-SNAPSHOT-javadoc.jar --packages "org.elasticsearch:elasticsearch-spark_2.10:2.3.2"
+//spark-shell --jars /home/ubuntu/Downloads/spark-redis/target/spas-0.1.1-jar-with-dependencies.jar, /home/ubuntu/Downloads/jedis-jedis-2.8.1/target/jedis-2.8.1-SNAPSHOT-javadoc.jar --packages "org.elasticsearch:elasticsearch-spark_2.10:2.3.2"
 
 jsonFiles.filter(x=>""""target": "a phone number"""".r.findFirstIn(x)==None).saveJsonToEs("filter/test")
 
@@ -48,7 +48,7 @@ jsonFiles.filter(x=>""""target": "a phone number"""".r.findFirstIn(x)==None).sav
 val jsonFiles = sc.textFile("s3a://venmo-json/*/*")
 jsonFiles: org.apache.spark.rdd.RDD[String] = s3a://venmo-json/*/* MapPartitionsRDD[19] at textFile at <console>:32
 
-scala> jsonFiles.filter(x=> !{{x contains """[{"target": "a phone number"}]"""} || {x contains """[{"target": "an email"}]"""}}).saveJsonToEs("/venmo/filter6")
+jsonFiles.filter(x=> !{{x contains """[{"target": "a phone number"}]"""} || {x contains """[{"target": "an email"}]"""}}).saveJsonToEs("/venmo/filter6")
 
 
 

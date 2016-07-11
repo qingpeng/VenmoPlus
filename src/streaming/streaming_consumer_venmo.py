@@ -1,3 +1,5 @@
+# spark streaming to consume messages from kafka and send the records into redis and elasticsearch dbs
+
 from __future__ import print_function
 
 import sys

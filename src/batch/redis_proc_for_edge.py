@@ -1,3 +1,5 @@
+# script to prepare for command list to load the edge information into redis db, set for each user id with friends inside
+
 def dump_files(dir_name,file_out):
     file_out_obj = open(file_out, 'w')
     for filename in os.listdir(dir_name):

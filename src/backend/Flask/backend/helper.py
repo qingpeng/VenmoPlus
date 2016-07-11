@@ -1,3 +1,6 @@
+# helper script to work with __init__.py to build API for frontend to call
+#
+
 import redis 
 from elasticsearch import Elasticsearch 
 from elasticsearch.helpers import streaming_bulk,bulk,parallel_bulk

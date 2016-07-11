@@ -1,3 +1,6 @@
+# To build API, working with helper.py
+#
+
 from flask import Flask
 from flask_restful import reqparse, Resource, Api
 import flask_cors
@@ -23,6 +26,7 @@ def after_request(response):
 
 parser = reqparse.RequestParser()
 
+# API for list relavant user names and list of their friends
 class User(Resource):
 	def get(self):
 		print ("Call for GET /user")
@@ -33,6 +37,7 @@ class User(Resource):
 		names = list_user(name)
 		return names		
 
+# API for friend recommender
 class Friend(Resource):
 	def get(self):
 		print ("Call for GET /friend")
@@ -43,6 +48,7 @@ class Friend(Resource):
 		friends_list = friend_recommend(r0,r1,user_id) 
 		return friends_list		
 
+# API for searching transactions in friend circle
 class Message(Resource):
 	def get(self):
 		print ("Call for GET /message")
@@ -55,6 +61,7 @@ class Message(Resource):
 		transactions = search_message_in_circle(message,user_id,1)
 		return transactions		
 
+# API for getting name for a user ID
 class Name(Resource):
     def get(self):
         print ("Call for GET /name")
@@ -64,6 +71,7 @@ class Name(Resource):
         name = get_name(user_id)
         return name
 
+# API for getting the list of friends for a user
 class List(Resource):
     def get(self):
         print ("Call for GET /list")
@@ -75,7 +83,7 @@ class List(Resource):
 
 
 
-
+# API for getting the recent transactions
 class Search(Resource):
     def get(self):
 	print ("Call for GET /search")

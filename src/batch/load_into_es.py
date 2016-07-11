@@ -1,3 +1,5 @@
+# script to load json files into elasticsearch db
+
 import argparse
 from elasticsearch import Elasticsearch
 from elasticsearch.helpers import parallel_bulk
