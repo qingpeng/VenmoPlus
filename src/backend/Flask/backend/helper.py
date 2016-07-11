@@ -142,7 +142,7 @@ def test_new_connection(a,b,updated_time): # test if this is the first connectio
            
     }
     res = es.search(index=es_index,doc_type=es_type, body=query)
-    print a,b,updated_time,res['hits']['total']
+    #print a,b,updated_time,res['hits']['total']
     if res['hits']['total'] == 0:
         # no transactions before this one
         return True
