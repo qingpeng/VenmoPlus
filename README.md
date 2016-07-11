@@ -24,7 +24,7 @@ demo video: https://www.youtube.com/watch?v=a_qULTlw1e4
 
 **`./src/`** all the important files are here
 
-`./src/batch/` scripts to load historic transactions data from S3 into Redis and Elasticsearch DB
+**`./src/batch/`** scripts to load historic transactions data from S3 into Redis and Elasticsearch DB
 
 - `redis_proc_for_edge.py`: load edge information to Redis, key: user_id value: set with friend list 
 
