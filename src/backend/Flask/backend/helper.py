@@ -7,22 +7,22 @@ from elasticsearch.helpers import streaming_bulk,bulk,parallel_bulk
 
 
 # redis DB with edge info
-r0 = redis.StrictRedis(host="52.11.57.125", port=6379, db=0)
+r0 = redis.StrictRedis(host="localhost", port=6379, db=0)
 
 # redis DB with userID: user name
-r1 = redis.StrictRedis(host="52.11.57.125", port=6379, db=1)
+r1 = redis.StrictRedis(host="localhost", port=6379, db=1)
 
 es = Elasticsearch(
-        ['52.34.193.106:9200'],
+        ['localhost:9200'],
    sniff_on_start=False,
    sniff_on_connection_fail=False,
    #sniffer_timeout=60
    )
-es_index = ["venmo_test","venmo2018"]
-#es_index = "venmo_test" 
-#es_type = "payment"
-es_type = ["payment","transaction"]
-redis_server = "52.11.57.125"
+#es_index = ["venmo_test","venmo2018"]
+es_index = "venmo_test" 
+es_type = "payment"
+#es_type = ["payment","transaction"]
+redis_server = "localhost"
 
 
 def get_friend(vertex):

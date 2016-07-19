@@ -64,12 +64,12 @@ if __name__ == "__main__":
     sqlContext = SQLContext(sc)
 
     ssc = StreamingContext(sc, 15)
-    brokers = "52.40.167.57:9092"
+    brokers = "localhost:9092"
     topic = "venmo_test"
 
-    r0 = redis.StrictRedis(host='52.11.57.125', port=6379, db=0)
-    r1 = redis.StrictRedis(host='52.11.57.125', port=6379, db=1)
-    es = Elasticsearch([{'host': '52.34.193.106', 'port': 9200}])
+    r0 = redis.StrictRedis(host='localhost', port=6379, db=0)
+    r1 = redis.StrictRedis(host='localhost', port=6379, db=1)
+    es = Elasticsearch([{'host': 'localhost', 'port': 9200}])
 
   #  degree_DF = sqlContext.read.format("org.apache.spark.sql.cassandra").options(table="degr
 #ee", keyspace="venmo_streaming").load()
