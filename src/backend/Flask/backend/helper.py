@@ -192,7 +192,7 @@ def get_recent_transactions(id): # for specific user, also with distance between
 	transaction_dict['target_name'] = target_name
 	transaction_dict['target_id'] = target_id
         if distance == 0:
-            distance = ">3rd degree connection (Know this guy???)"
+            distance = ">3rd (Know this guy???)"
         elif distance == 1:
             distance = "1st"
         elif distance == 2:

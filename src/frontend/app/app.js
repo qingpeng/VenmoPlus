@@ -3,32 +3,32 @@ var myApp = angular.module("myApp", ["ngRoute", "ngResource", "myApp.services"])
 var services = angular.module("myApp.services", ["ngResource"])
 services
 .factory('Search', function($resource) {
-    return $resource('http://52.40.84.152:8089/api/v1/search', {q: '@q'}, {
+    return $resource('http://52.40.84.152:8080/api/v1/search', {q: '@q'}, {
         query: { method: 'GET', isArray: true}
     });
 })
 .factory('User', function($resource) {
-    return $resource('http://52.40.84.152:8089/api/v1/user', {q: '@q'}, {
+    return $resource('http://52.40.84.152:8080/api/v1/user', {q: '@q'}, {
         query: { method: 'GET', isArray: true}
     });
 })
 .factory('Friend', function($resource) {
-    return $resource('http://52.40.84.152:8089/api/v1/friend', {q: '@q'}, {
+    return $resource('http://52.40.84.152:8080/api/v1/friend', {q: '@q'}, {
         query: { method: 'GET', isArray: true}
     });
 })
 .factory('Message', function($resource) {
-    return $resource('http://52.40.84.152:8089/api/v1/message', {q: '@q', m: '@m'}, {
+    return $resource('http://52.40.84.152:8080/api/v1/message', {q: '@q', m: '@m'}, {
         query: { method: 'GET', isArray: true}
     });
 })
 .factory('Name', function($resource) {
-    return $resource('http://52.40.84.152:8089/api/v1/name', {q: '@q'}, {
+    return $resource('http://52.40.84.152:8080/api/v1/name', {q: '@q'}, {
         query: { method: 'GET', isArray: false}
     });
 })
 .factory('List', function($resource) {
-    return $resource('http://52.40.84.152:8089/api/v1/list', {q: '@q'}, {
+    return $resource('http://52.40.84.152:8080/api/v1/list', {q: '@q'}, {
         query: { method: 'GET', isArray: true}
     });
 })
