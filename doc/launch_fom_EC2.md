@@ -34,6 +34,11 @@ modify app.js to reflect current API server url
 `bin/zookeeper-server-start.sh config/zookeeper.properties &`
 `bin/kafka-server-start.sh config/server.properties &`
 
+launch kafka producer to fetch realtime data from Venmo API
+
+`cd`
+`python VenmoPlus/src/streaming/kafka_producer_venmo_api.py localhost venmo_test 0 15 &`
+
 6  spark
 
 `screen -S spark`
