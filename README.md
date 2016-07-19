@@ -2,9 +2,9 @@
 ### Explore your Venmo network! 
 ####an insight data engineering program project
 
-http://www.venmoplus.com
+http://venmoplus.com
 
-(the cluster with full scale data is shut down by Insight, a VenmoPlus lite version with limited data is still online! with real time feature!)
+(the cluster with full scale data is shut down by Insight, a VenmoPlus lite version with limited data is still online! with real time feature! probably a little bit slow, though.)
 
 demo slides: http://www.slideshare.net/qingpeng/venmoplus-demo-week6
 
