@@ -4,6 +4,8 @@
 
 http://www.venmoplus.com
 
+(the cluster with full scale data is shut down by Insight, a VenmoPlus lite version with limited data is still online! with real time feature!)
+
 demo slides: http://www.slideshare.net/qingpeng/venmoplus-demo-week6
 
 demo video: https://www.youtube.com/watch?v=a_qULTlw1e4
