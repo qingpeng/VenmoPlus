@@ -1,5 +1,5 @@
 var myApp = angular.module("myApp", ["ngRoute", "ngResource", "myApp.services"]);
-var url = 'http://52.42.165.94:8080'
+var url = 'http://52.26.150.191:8080'
 var services = angular.module("myApp.services", ["ngResource"])
 services
 .factory('Search', function($resource) {
