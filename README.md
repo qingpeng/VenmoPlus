@@ -1,13 +1,13 @@
 # VenmoPlus.com
 ### Explore your Venmo network! 
-####an insight data engineering program project
+#### an insight data engineering program project
 
 
 demo video: https://www.youtube.com/watch?v=a_qULTlw1e4
 
 demo slides: http://www.slideshare.net/qingpeng/venmoplus
 
-####Features
+#### Features
 
 (here, "friends" mean people who have done transanctions with the user.)
 * fuzzy searching of user name, with friend list to help identify users with same name
@@ -17,7 +17,7 @@ demo slides: http://www.slideshare.net/qingpeng/venmoplus
 * search transactions in your history and the transactions related to your friends with specific items
 * list friends of the user and the number of their friends (degree)
 
-####Repo Structure
+#### Repo Structure
 
 **`./src/`** all the important files are here
 
@@ -61,18 +61,18 @@ demo slides: http://www.slideshare.net/qingpeng/venmoplus
 **`./docs/`** instructions about setup, launch the website
 
 
-####Pipeline
+#### Pipeline
 
 ![alt text](https://raw.githubusercontent.com/qingpeng/VenmoPlus/master/docs/pipeline.png "Pipeline")
 
-####System
+#### System
 
 ![alt text](https://raw.githubusercontent.com/qingpeng/VenmoPlus/master/docs/system.png "System")
 
 
-####Design and Optimizations
+#### Design and Optimizations
 
-#####Replace BFS with Bidirectional Search  
+##### Replace BFS with Bidirectional Search  
 
 Shortest distance -> intersection of sets (friend lists)
 
@@ -84,7 +84,7 @@ O(N^2) -> O(2*N)
 
  O(N^3) -> O(N + N^2)
  
-#####Real time distance query
+##### Real time distance query
 
 Query distance between vertices in a historic moment in a constantly changing graph (because we don’t pre-calculate the distance….)
 A recent transaction for a user is history and has changed the graph
@@ -94,7 +94,7 @@ Query distance of the two users at that moment. (not considering that specific t
 Remove the influence of that specific transaction temporarily and restore later
 Test if that transaction is the first between the pair of users.
 
-#####Query and Search optimizations
+##### Query and Search optimizations
 
 1. Remove aggregation for better performance… (trade-off)
 2. Friend recommender: Using Counter to get only 5 users with the most common friends
